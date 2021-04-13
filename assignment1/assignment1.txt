@@ -1,0 +1,250 @@
+
+drop table PlayHistory;
+drop table SongInPlaylist;
+drop table SongInAlbum;
+drop table Playlist;
+drop table Song;
+drop table Albumb;
+drop table Artist;
+drop table User;
+
+
+create table User(
+	uid int primary key,
+	uname varchar(30),
+	profiletext varchar(200)
+);
+
+
+
+create table Artist(
+	artistId int primary key,
+	artistName varchar(20), 
+	nationality varchar(20)
+);
+
+
+create table Albumb(
+	albumId int primary key, 
+	artistName varchar(20),
+	releaseTime datetime
+);
+
+
+
+create table Song (
+	sid int primary key,
+	sname varchar(100), 
+	artistId int,
+	language varchar(20),
+	style varchar(20), 
+	duration varchar(10),
+	releaseTime datetime,
+	FOREIGN KEY (artistId) REFERENCES Artist(artistId)
+);
+
+
+
+create table Playlist(
+	playlistId int primary key,
+	playlistName varchar(20),
+	uid int,
+	createTme datetime,
+	description varchar(50),
+	FOREIGN KEY (uid) REFERENCES User(uid)
+);
+
+
+
+
+create table SongInAlbum(
+	sid int, 
+	albumId int,
+	PRIMARY KEY(sid,albumId),
+	FOREIGN KEY (sid) REFERENCES Song(sid),
+	FOREIGN KEY (albumId) REFERENCES Albumb(albumId)
+);
+create table SongInPlaylist (
+	sid int, 
+	playlistId int,
+	addTime datetime,
+	PRIMARY KEY(sid,playlistId),
+	FOREIGN KEY (sid) REFERENCES Song(sid),
+	FOREIGN KEY (playlistId) REFERENCES Playlist(playlistId)
+);
+
+select s.sid,s.sname,a.artistName from Song s inner join Artist a on s.artistId=a.artistId;
+
+select addTime  from SongInPlaylist 
+group by  addTime  having addTime >='2020-01-01' and addTime <='2021-05-01';
+
+
+select s.sid,s.sname,a.artistName from Song s,Artist a,SongInPlaylist sp where s.artistId=a.artistId and s.sid=sp.sid;
+
+create table PlayHistory (
+	uid int,
+	sid int, 
+	startTime datetime, 
+	endTime datetime,
+	PRIMARY KEY(uid,sid,startTime),
+	FOREIGN KEY (uid) REFERENCES User(uid),
+	FOREIGN KEY (sid) REFERENCES Song(sid)
+);
+
+
+
+
+insert into user values
+(1,'twist','I am singer '),
+(2,'sophronia','I don not have to describe myself, do I?'),
+(3,'twist','I AM WHO I AM AND THAT IS JUST ENOUGH'),
+(4,'wickham','No space is no space'),
+(5,'flora','You cannot help but like me. You will see'),
+(6,'yawler','Get set to get your mind blown away'),
+(7,'sweedlepipe','Eating, sleeping, running, dancing, talking. I love many things');
+
+select * from user;
+
+ALTER TABLE user MODIFY profiletext varchar(200);
+
+
+insert into artist values
+(1,'Nubya Garcia','United Kingdom'),
+(2,'Laura Fygi','Dutch'),
+(3,'Mark Poirier','United States'),
+(4,'Ludwig van Beethoven','Germany'),
+(5,'Faye Wong','China'),
+(6,'Justing Bieber','Canada'),
+(7,'Nubya Garcia ji','French');
+
+INSERT INTO Albumb VALUES
+(1,'My World',STR_TO_DATE('11/17/2009','%m/%d/%Y')),
+(2,'Big Deal',STR_TO_DATE('8/12/2020','%m/%d/%Y')),
+(4,'Coming Home',STR_TO_DATE('8/13/1992','%m/%d/%Y')),
+(5,'Laura Goes East',STR_TO_DATE('9/4/2020','%m/%d/%Y')),
+(6,'Les sources',STR_TO_DATE('11/16/2018','%m/%d/%Y')),
+(7,'No Walls Mixtape',STR_TO_DATE('5/9/2019','%m/%d/%Y')),
+(8,'Paris',STR_TO_DATE('5/21/2020','%m/%d/%Y'));
+
+insert into Song values
+(1,'Hold On',6,'English','Pop','2:51',STR_TO_DATE('3/5/2021','%m/%d/%Y')),
+(2,'Pace',1,null,'Jazz','7:53',STR_TO_DATE('3/5/2020','%m/%d/%Y')),
+(3,'The Message Continues',2,null,'Jazz','6:45',STR_TO_DATE('3/5/2021','%m/%d/%Y')),
+(4,'Source',1,null,'Jazz','12:08',STR_TO_DATE('3/4/2019','%m/%d/%Y')),
+(5,'Together Is a Beautiful Place to Be',1,null,'Jazz','7:36',STR_TO_DATE('3/15/2021','%m/%d/%Y')),
+(6,'Stand with Each Other',3,null,'Jazz','3:39',STR_TO_DATE('2/8/2020','%m/%d/%Y')),
+(7,'Inner Game',4,null,'Jazz','7:45',STR_TO_DATE('3/3/2018','%m/%d/%Y')),
+(8,'La cumbia me est llamando',2,'Spanish','Jazz','4:15',STR_TO_DATE('3/25/2020','%m/%d/%Y')),
+(9,'Before Us: In Demerara & Caura',6,null,'Jazz','8:01',STR_TO_DATE('6/7/2021','%m/%d/%Y')),
+(10,'Hold On',6,'English','Pop','2:51',STR_TO_DATE('3/5/2021','%m/%d/%Y')),
+(11,'Hold in',7,'English','Pop','2:51',STR_TO_DATE('3/4/2022','%m/%d/%Y')),
+(12,'Sold in',7,'English','Pop','2:51',STR_TO_DATE('1/5/2021','%m/%d/%Y'));
+
+
+
+insert into Playlist values
+(1,'Classical Running',7,STR_TO_DATE('7/4/2013 11:20','%m/%d/%Y %H:%i'),'Classical music for running'),
+(2,'Summer Reading',1,STR_TO_DATE('1/4/2021 6:47','%m/%d/%Y %H:%i'),'Soundtrack to your reading'),
+(3,'Songs for Sleep',2,STR_TO_DATE('10/3/2020 15:48','%m/%d/%Y %H:%i'),'Music for sleep. Sweet dreams');
+
+
+
+insert into SongInAlbum values
+(1,2),
+(2,2),
+(3,5),
+(4,1),
+(5,1),
+(6,4),
+(7,4),
+(8,5),
+(9,6);
+
+
+insert into SongInPlaylist values
+(1,1,STR_TO_DATE('1/31/2021 16:05','%m/%d/%Y %H:%i')),
+(2,3,STR_TO_DATE('1/25/2021 7:30','%m/%d/%Y %H:%i')),
+(3,3,STR_TO_DATE('2/9/2021 6:10','%m/%d/%Y %H:%i')),
+(5,1,STR_TO_DATE('7/4/2013 11:20','%m/%d/%Y %H:%i')),
+(6,2,STR_TO_DATE('2/22/2021 4:34','%m/%d/%Y %H:%i')),
+(5,3,STR_TO_DATE('3/8/2021 0:07','%m/%d/%Y %H:%i')),
+(9,2,STR_TO_DATE('1/22/2021 7:14','%m/%d/%Y %H:%i')),
+(8,1,STR_TO_DATE('1/25/2021 22:31','%m/%d/%Y %H:%i')),
+(7,2,STR_TO_DATE('3/2/2021 14:35','%m/%d/%Y %H:%i')),
+(4,1,STR_TO_DATE('1/7/2021 11:33','%m/%d/%Y %H:%i'));
+
+
+insert into playhistory values
+(7,3,STR_TO_DATE('3/18/2020 6:45','%m/%d/%Y %H:%i'),STR_TO_DATE('3/18/2020 6:47','%m/%d/%Y %H:%i')),
+(4,2,STR_TO_DATE('3/20/2020 18:33','%m/%d/%Y %H:%i'),STR_TO_DATE('3/20/2020 18:35','%m/%d/%Y %H:%i')),
+(6,1,STR_TO_DATE('4/12/2020 4:13','%m/%d/%Y %H:%i'),STR_TO_DATE('4/12/2020 4:15','%m/%d/%Y %H:%i')),
+(3,3,STR_TO_DATE('4/17/2020 0:30','%m/%d/%Y %H:%i'),STR_TO_DATE('6/17/2020 0:33','%m/%d/%Y %H:%i')),
+(2,3,STR_TO_DATE('5/6/2020 6:25','%m/%d/%Y %H:%i'),STR_TO_DATE('5/6/2020 6:27','%m/%d/%Y %H:%i')),
+(1,3,STR_TO_DATE('6/7/2020 15:15','%m/%d/%Y %H:%i'),STR_TO_DATE('6/7/2020 15:17','%m/%d/%Y %H:%i')),
+(7,1,STR_TO_DATE('6/26/2020 21:58','%m/%d/%Y %H:%i'),STR_TO_DATE(' 6/26/2020 21:59','%m/%d/%Y %H:%i')),
+(5,1,STR_TO_DATE('7/9/2020 15:09','%m/%d/%Y %H:%i'),STR_TO_DATE('7/9/2020 15:11','%m/%d/%Y %H:%i')),
+(1,8,STR_TO_DATE('7/27/2020 5:44','%m/%d/%Y %H:%i'),STR_TO_DATE('9/27/2020 5:46','%m/%d/%Y %H:%i')),
+(4,1,STR_TO_DATE('8/8/2020 12:02','%m/%d/%Y %H:%i'),STR_TO_DATE('5/8/2020 12:03','%m/%d/%Y %H:%i')),
+(7,1,STR_TO_DATE('9/8/2020 14:11','%m/%d/%Y %H:%i'),STR_TO_DATE('2/8/2020 14:13','%m/%d/%Y %H:%i')),
+(2,1,STR_TO_DATE('9/27/2020 2:26','%m/%d/%Y %H:%i'),STR_TO_DATE('9/27/2020 2:28','%m/%d/%Y %H:%i')),
+(1,5,STR_TO_DATE('10/18/2020 16:42','%m/%d/%Y %H:%i'),STR_TO_DATE('10/18/2020 16:44','%m/%d/%Y %H:%i')),
+(1,2,STR_TO_DATE('10/18/2020 16:42','%m/%d/%Y %H:%i'),STR_TO_DATE('10/18/2020 16:44','%m/%d/%Y %H:%i'));
+
+
+answer ....................
+
+select sid,sname from Song where sid not in (
+	select sid from SongInAlbum);
+
+select sid, sname from Song where sid in(
+	select sid from SongInPlaylist where playlistId in (
+		select playlistId from Playlist where playlistName like '%sleep%')); 
+		
+select uid, uname from User where uid in(
+	select uid from playhistory where sid in(
+		select sid from Song where artistId in (
+			select artistId from Artist where nationality = 'French')));
+			
+
+select * from Albumb where albumId in(
+	select distinct albumId from SongInAlbum where sid In( 
+		select artistId  from Song group by artistId having (artistId)>1));		
+
+
+π albumId,artistName,releaseTime (σ distinct albumId(σ (artistId)>1 (Albumb*SongInAlbum*Song)).
+
+select s.sid,s.sname,a.artistName, count(s.sid) from 
+Song s,Artist a,SongInPlaylist sp 
+where s.artistId=a.artistId and s.sid=sp.sid and 
+(sp.addTime >='2020-01-01' and sp.addTime <='2021-05-01') 
+group by s.sid order by s.sid;
+
+select * from Artist where artistId in (
+select artistId from Song where YEAR(releaseTime)=2020 and style='Jazz' 
+group by artistId order by count(artistId) desc ) limit 1;
+
+select uid,uname from User where uid in (
+select uid from Playlist where playlistId in(
+select playlistId from SongInPlaylist where sid in (
+select sid from Song where artistId in (
+select artistId from Artist where artistName ='Justing Bieber'))));
+
+
+select * from Albumb where albumId in (
+select albumId from  SongInAlbum where sid in(
+select sid from Song where style='Folk' group by style having count(style)>=10));
+-------------------------------------
+
+π albumId,artistName,releaseTime (σ distinct albumId(σ (artistId)>1 (Albumb*SongInAlbum*Song)).
+π albumId,artistName,releaseTime σ style='Folk',count(style)>=10 (Albumb*SongInAlbum*Song).
+----------------------------------------------
+update Playlist p,  User u set p.playlistName='Rock' where p.uid=u.uid and p.uid=3;
+
+delete from playhistory where playhistory.uid in (select uid from (select uid from playhistory where uid=5 group by uid having count(uid)<30 )t);
+
+update Playlist p,  User u set p.playlistName='Reading',description='soft piano music to accoompany reading' where p.uid=u.uid and p.uid=10;
+
+
+
+
+

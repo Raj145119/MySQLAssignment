@@ -1,0 +1,71 @@
+// Assignment 2 Solution
+
+drop table Purchase_item;
+drop table Purchase;
+drop table Item;
+
+//create table for assignment 2  
+
+create table Item(
+	iid int primary key,
+	item_name varchar(30), 
+	category varchar(30),
+	price int,
+	origin	varchar(30),
+	description varchar(100)
+);
+
+
+create table Purchase(
+	pid int primary key, 
+	p_timestamp datetime,
+	total_amount int,
+	payment_method varchar(20),
+	card_number varchar(30),
+	status varchar(20)
+);
+
+
+create table Purchase_item (
+	pid int,
+	iid int,
+	quantity int,
+	total_price int,
+	primary key(pic,iid),
+	FOREIGN KEY (pid) REFERENCES Purchase(pid),
+	FOREIGN KEY (iid) REFERENCES Item(iid)
+);
+
+// insert date into given table
+
+insert into Item values
+(1,'apple','fruit',100,'india','apple is sweet'),
+(2,'banana','fruit',40,'india','banana is sweet'),
+(3,'chair','ferniture',500,'india','chair is lexurious'),
+(4,'table','ferniture',100,'india','table is looking good'),
+(5,'car','vehicle',400000,'india','nice car'),
+(6,'cycle','vehicle',700,'india','nice cycle');
+
+insert into Purchase values
+(1,STR_TO_DATE('11/17/2020','%m/%d/%Y'),700,'cash',null,'sucess'),
+(2,STR_TO_DATE('12/15/2020','%m/%d/%Y'),100,'credit_card','6765645433454554434333','sucess');
+
+
+insert into Purchase_item values
+(1,6,1,700),
+(1,1,14,1400),
+(2,4,1,100);
+
+//----------------------------------------------------------
+// Q2. a)  Answer=>
+drop view store_view;
+
+create view store_view as select i.iid,i.item_name,pi.quantity,p.p_timestamp 
+from Item i,Purchase p,Purchase_item pi where i.iid=pi.iid and p.pid=pi.pid;
+
+select * from store_view;
+
+//Q2. b)  Answer=>
+
+select item_name,MONTH(p_timestamp),sum(quantity)as 'total Sell Quantity' 
+from store_view where YEAR(p_timestamp)=2020 group by YEAR(p_timestamp),MONTH(p_timestamp);
